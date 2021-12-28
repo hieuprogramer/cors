@@ -22,7 +22,7 @@
                 <h1 class="display-4">Welcome!</h1><p class="lead text-primary ont-weight-bold"><?php echo $_SESSION["username"] ?></p>
                 <hr class="my-4">
                 <p>Ứng dụng web mô phỏng hệ thống đăng nhập có chứa lỗ hổng...</p>
-                <a class="btn btn-primary btn-lg" target="blank" href="#" role="button">Learn more</a>
+                <a class="btn btn-primary btn-lg" target="blank" href="#" role="button">Home Page</a>
             </div>
         </div>
     </div>
