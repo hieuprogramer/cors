@@ -3,6 +3,8 @@
 
     include("connection.php");
     if($_SESSION["userid"]!=$_GET["user"]) {
+        header('HTTP/1.1 403 FORBIDDEN');
+        header('Status: 403 You Do Not Have Access To This Page');
         header("location:login.php");
     }
     $sql = "select * from users where id='{$_SESSION["userid"]}'";
