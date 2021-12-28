@@ -11,7 +11,7 @@
     //     header("location:login.php");
     // }
 
-    $sql = "select * from users where id='{$_GET["userid"]}'";
+    $sql = "select * from users where id='{$_GET["user"]}'";
     $result = mysqli_query($data, $sql);
     $user = mysqli_fetch_array($result);
 ?>
