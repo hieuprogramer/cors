@@ -7,9 +7,9 @@
         header("location:login.php");
     }
 
-    if($_SESSION['userid']!=$_GET['user']) {
-        header("location:login.php");
-    }
+    // if($_SESSION['userid']!=$_GET['user']) {
+    //     header("location:login.php");
+    // }
 
     $sql = "select * from users where id='{$_GET["user"]}'";
     $result = mysqli_query($data, $sql);
@@ -71,10 +71,14 @@
                                 <div id="alert_sucess_message" class="alert alert-success collapse" role="alert">
                                     Your profile has been updated successfully.
                                 </div>
+                                <div class="d-none">
+                                    <input type="hidden" class="form-control" id="userid" name="userid"
+                                        value="<?php echo $_GET['user'] ?>">
+                                </div>
                                 <div class="mb-3">
                                     <label for="fullname">Full Name *</label>
                                     <input type="text" class="form-control" id="fullname" name="fullname" maxlength="50"
-                                        placeholder="<?php echo $user['fullname'] ?>">
+                                        value="<?php echo $user['fullname'] ?>">
                                     <div id="fullname_error_message" class="text-danger"></div>
                                 </div>
                                 <div class="mb-3">
@@ -86,13 +90,12 @@
                                 <div class="mb-3">
                                     <label for="email">Email *</label>
                                     <input type="email" class="form-control" id="email" name="email" maxlength="100"
-                                        placeholder="<?php echo $user['email'] ?>">
+                                        value="<?php echo $user['email'] ?>">
                                     <div id="email_error_message" class="text-danger"></div>
                                 </div>
                                 <div class="mb-3">
                                     <label>Gender *</label>
-                                    <select class="form-select" name="gender" id="gender" aria-label="Default select example">
-                                        <option value="" hidden><?php echo $user['gender'] ?></option>
+                                    <select class="form-select" name="gender" id="gender" aria-label="Default select example" value="<?php echo $user['gender'] ?>">
                                         <option>Male</option>
                                         <option>Female</option>
                                     </select>
@@ -100,7 +103,7 @@
                                 </div>
                                 <hr class="mb-4">
                                 <input type="hidden" name="action" id="action" value="update_user">
-                                <button class="btn btn-primary btn-block" type="submit">Update Password</button>
+                                <button class="btn btn-primary btn-block" type="submit">Update Profile</button>
                             </form>
                         </div>
                     </div>
@@ -136,7 +139,7 @@
                                     <div id="confirm_password_error_message" class="text-danger"></div>
                                 </div>
                                 <hr class="mb-4">
-                                <button class="btn btn-primary btn-block" type="submit">Update Profile</button>
+                                <button class="btn btn-primary btn-block" type="submit">Update Password</button>
                             </form>
                         </div>
                     </div>
@@ -146,6 +149,88 @@
         </div>
     </div>
     <?php include("footer.php"); ?>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            $("#nav-profile-tab").click(function(){
+                location.reload();
+            });
+
+            $("#fullname").focusout(function () {
+                check_fullname();
+            });
+
+            $("#email").focusout(function () {
+                check_email();
+            });
+
+            $("#gender").focusout(function () {
+                check_gender();
+            });
+
+            function check_fullname() {
+                if ($.trim($('#fullname').val()) == '') {
+                    $("#fullname_error_message").html("Fullname is a required field.");
+                    $("#fullname_error_message").show();
+                    $("#fullname").addClass("is-invalid");
+                } else {
+                    $("#fullname_error_message").hide();
+                    $("#fullname").removeClass("is-invalid");
+                }
+            }
+
+            function check_email() {
+                var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+                var email_length = $("#email").val().length;
+
+                if ($.trim($('#email').val()) == '') {
+                    $("#email_error_message").html("Email is a required field.");
+                    $("#email_error_message").show();
+                    $("#email").addClass("is-invalid");
+                } else if (!(pattern.test($("#email").val()))) {
+                    $("#email_error_message").html("Invalid email address");
+                    $("#email_error_message").show();
+                    $("#email").addClass("is-invalid");
+                } else {
+                    $("#email_error_message").hide();
+                    $("#email").removeClass("is-invalid");
+                }
+            }
+
+            function check_gender() {
+                if ($.trim($('#gender').val()) == '') {
+                    $("#gender_error_message").html("Gender is a required field.");
+                    $("#gender_error_message").show();
+                    $("#gender").addClass("is-invalid");
+                } else {
+                    $("#gender_error_message").hide();
+                    $("#gender").removeClass("is-invalid");
+                }
+            }
+
+            $('#user_form').on('submit', function (event) {
+                event.preventDefault();
+                data = $('#user_form').serialize();
+                $.ajax({
+                    type: "POST",
+                    data: data,
+                    url: "action_profile.php",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log("ok");
+                        if (data.status == 'success') {
+                            $("#alert_sucess_message").show();
+                            $("#alert_error_message").hide();
+                        } else if (data.status=='error') {
+                            alert("Chưa chọn giới tính");
+                        }
+                    },
+                    error: function () {
+                        alert("Lỗi");
+                    }
+                });
+            });
+        });
+
+    </script>
 </body>
 </html>

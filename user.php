@@ -21,8 +21,8 @@
             <div class="col-md-8 brand">
                 <h1 class="display-4">Welcome!</h1><p class="lead text-primary ont-weight-bold"><?php echo $_SESSION["username"] ?></p>
                 <hr class="my-4">
-                <p>User Login and Register Syste with Admin Panel is an very useful application that...</p>
-                <a class="btn btn-primary btn-lg" target="blank" href="http://egavilanmedia.com/user-registration-and-login-system-with-admin-panel/" role="button">Learn more</a>
+                <p>Ứng dụng web mô phỏng hệ thống đăng nhập có chứa lỗ hổng...</p>
+                <a class="btn btn-primary btn-lg" target="blank" href="#" role="button">Learn more</a>
             </div>
         </div>
     </div>
