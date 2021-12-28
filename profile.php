@@ -1,12 +1,11 @@
 <?php
     session_start();
-    if(!isset($_SESSION["username"])) {
+
+    include("connection.php");
+    if($_SESSION["userid"]!=$_GET["user"]) {
         header("location:login.php");
     }
-    
-    include("connection.php");
-
-    $sql = "select * from users where id='{$_GET["user"]}'";
+    $sql = "select * from users where id='{$_SESSION["userid"]}'";
     $result = mysqli_query($data, $sql);
     $user = mysqli_fetch_array($result);
 ?>
