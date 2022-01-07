@@ -1,6 +1,6 @@
 <?php
     include("connection.php");
-
+    ini_set('session.cookie_domain', '.cors.com'); 
     session_start();
     
     if($data === false) {
@@ -15,17 +15,9 @@
         $result = mysqli_query($data, $sql);
         $row = mysqli_fetch_array($result);
 
-        if($row["usertype"] == "user") {
-            $_SESSION["username"] = $username;
-            $_SESSION["usertype"] = "user";
-            $_SESSION["userid"] = $row["id"];
-            header("location:user.php?user=".$_SESSION["userid"]);
-        }
-        elseif($row["usertype"] == "admin") {
-            $_SESSION["username"] = $username;
-            $_SESSION["usertype"] = "admin";
-            $_SESSION["userid"] = $row["id"];
-            header("location:admin.php".$_SESSION["userid"]);
+        if (mysqli_num_rows($result) > 0) {
+            $_SESSION["username"] = $row["username"];
+            header("location:index.php");
         }
         else {
             echo "username or password incorrect";

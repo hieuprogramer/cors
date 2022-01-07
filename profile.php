@@ -1,4 +1,5 @@
 <?php
+    ini_set('session.cookie_domain', '.cors.com'); 
     session_start();
 
     include("connection.php");
@@ -7,11 +8,7 @@
         header("location:login.php");
     }
 
-    // if($_SESSION['userid']!=$_GET['user']) {
-    //     header("location:login.php");
-    // }
-
-    $sql = "select * from users where id='{$_GET["user"]}'";
+    $sql = "select * from users where username='{$_SESSION["username"]}'";
     $result = mysqli_query($data, $sql);
     $user = mysqli_fetch_array($result);
 ?>
@@ -42,19 +39,19 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-2"> <strong> Full name : </strong> </div>
-                                <div class="col-md-10"><?php echo $user["fullname"]; ?></div>
+                                <div id="fullname1" class="col-md-10"><?php echo $user["fullname"]; ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2"> <strong> Username : </strong> </div>
-                                <div class="col-md-10"><?php echo $user["username"]; ?></div>
+                                <div id="username1" class="col-md-10"><?php echo $user["username"]; ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2"> <strong> E-mail : </strong> </div>
-                                <div class="col-md-10"><?php echo $user["email"]; ?></div>
+                                <div id="emails1" class="col-md-10"><?php echo $user["email"]; ?></div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2"> <strong> Gender : </strong> </div>
-                                <div class="col-md-10"><?php echo $user["gender"]; ?></div>
+                                <div id="gender1" class="col-md-10"><?php echo $user["gender"]; ?></div>
                             </div>
                         </div>
                     </div>
@@ -71,10 +68,6 @@
                                 <div id="alert_sucess_message" class="alert alert-success collapse" role="alert">
                                     Your profile has been updated successfully.
                                 </div>
-                                <div class="d-none">
-                                    <input type="hidden" class="form-control" id="userid" name="userid"
-                                        value="<?php echo $_GET['user'] ?>">
-                                </div>
                                 <div class="mb-3">
                                     <label for="fullname">Full Name *</label>
                                     <input type="text" class="form-control" id="fullname" name="fullname" maxlength="50"
@@ -84,7 +77,7 @@
                                 <div class="mb-3">
                                     <label for="username">Username *</label>
                                     <input type="text" class="form-control" id="username" name="username" maxlength="50"
-                                        placeholder="<?php echo $user['username'] ?>" readonly>
+                                        value="<?php echo $user['username'] ?>" readonly>
                                     <div id="username_error_message" class="text-danger"></div>
                                 </div>
                                 <div class="mb-3">
@@ -152,7 +145,20 @@
     <script>
         $(document).ready(function(){
             $("#nav-profile-tab").click(function(){
-                location.reload();
+                $.ajax({
+                    type: "GET",
+                    url: "getDetail.php",
+                    dataType: "json",
+                    success: function (data) {
+                        $('#fullname1').text(data.fullname);
+                        $('#username1').text(data.username);
+                        $('#email1').text(data.email);
+                        $('#gender1').text(data.gender);
+                    },
+                    error: function () {
+                        alert("Lỗi");
+                    }
+                });
             });
 
             $("#fullname").focusout(function () {
@@ -210,6 +216,7 @@
             $('#user_form').on('submit', function (event) {
                 event.preventDefault();
                 data = $('#user_form').serialize();
+                console.log(data);
                 $.ajax({
                     type: "POST",
                     data: data,
@@ -220,6 +227,7 @@
                         if (data.status == 'success') {
                             $("#alert_sucess_message").show();
                             $("#alert_error_message").hide();
+                            setTimeout(function(){ $("#alert_sucess_message").hide(); }, 5000);
                         } else if (data.status=='error') {
                             alert("Chưa chọn giới tính");
                         }
